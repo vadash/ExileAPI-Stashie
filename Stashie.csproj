@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <OutputType>Library</OutputType>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>latest</LangVersion>
+    <DebugType>embedded</DebugType>
+    <PathMap>$(MSBuildProjectDirectory)=$(MSBuildProjectName)</PathMap>
+    <EmbedAllSources>true</EmbedAllSources>
+    <OutputPath>$(exapiPackage)\Plugins\Temp\Stashie\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="ImGui.NET" Version="1.90.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
+    <PackageReference Include="LinqFaster" Version="1.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ExileCore">
+      <HintPath>$(exapiPackage)\ExileCore.dll</HintPath>
+    </Reference>
+    <Reference Include="ItemFilterLibrary">
+      <HintPath>$(exapiPackage)\ItemFilterLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="Kalon">
+      <HintPath>$(exapiPackage)\Kalon.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
