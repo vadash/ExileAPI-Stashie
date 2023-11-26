@@ -4,7 +4,7 @@ namespace Stashie;
 
 public class Delay
 {
-    public static int GetDelay(int minimumDelay, int maximumDelay, int mean, int standardDeviation) => (int)MathF.Max(minimumDelay, (int)MathF.Min(maximumDelay, (int)NextGaussian(mean, standardDeviation)));
+    public static int GetDelay(int minimumDelay, int maximumDelay, int mean, int standardDeviation) => (int)MathF.Max(minimumDelay, MathF.Min(maximumDelay, NextGaussian(mean, standardDeviation)));
     
     private static float NextGaussian(int mean, int standardDeviation)
     {
