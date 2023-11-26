@@ -21,19 +21,25 @@ namespace Stashie
         public RangeNode<int> MinimumInterpolationDelay { get; set; } = new(0, 0, 1000);
     
         [Menu("Maximum Interpolation Delay", "Maximum Delay in Milliseconds")]
-        public RangeNode<int> MaximumInterpolationDelay { get; set; } = new(200, 0, 1000);
+        public RangeNode<int> MaximumInterpolationDelay { get; set; } = new(1000, 0, 1000);
         
         [Menu("Maximum Interpolation Distance")]
-        public RangeNode<int> MaximumInterpolationDistance { get; set; } = new(600, 0, 2560);
+        public RangeNode<int> MaximumInterpolationDistance { get; set; } = new(2560, 0, 2560);
         
-        [Menu("Extra Delay")]
-        public RangeNode<int> ExtraDelay { get; set; } = new(0, 0, 2000);
+        [Menu("Delay Mean", "Mean of the Gaussian Distribution in Milliseconds")]
+        public RangeNode<int> DelayMean { get; set; } = new(100, 0, 1000);
+    
+        [Menu("Delay Standard Deviation", "Standard Deviation of the Gaussian Distribution in Milliseconds")]
+        public RangeNode<int> DelayStandardDeviation { get; set; } = new(50, 0, 1000);
+    
+        [Menu("Minimum Delay", "Minimum Delay in Milliseconds")]
+        public RangeNode<int> MinimumDelay { get; set; } = new(50, 0, 1000);
+    
+        [Menu("Maximum Delay", "Maximum Delay in Milliseconds")]
+        public RangeNode<int> MaximumDelay { get; set; } = new(150, 0, 1000);
         
-        [Menu("HoverItem Delay")]
-        public RangeNode<int> HoverItemDelay { get; set; } = new(19, 0, 2000);
-        
-        [Menu("StashItem Delay")]
-        public RangeNode<int> StashItemDelay { get; set; } = new(19, 0, 2000);
+        [Menu("Extra Delay", "Extra Delay between each Stashing Attempt in Milliseconds")]
+        public RangeNode<int> ExtraDelay { get; set; } = new(250, 0, 2000);
 
         [Menu("Go to Stash Tab on Completion")]
         public ToggleNode VisitTabWhenDone { get; set; } = new ToggleNode(false);

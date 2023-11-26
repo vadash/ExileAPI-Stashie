@@ -571,7 +571,7 @@ namespace Stashie
             Mouse.MoveMouse(filterResult.ClickPosition + _clickWindowOffset, Settings.MaximumInterpolationDistance,
                 Settings.MinimumInterpolationDelay, Settings.MaximumInterpolationDelay);
 
-            yield return new WaitTime(Settings.HoverItemDelay + Random.Shared.Next(0, 25));
+            yield return new WaitTime(Delay.GetDelay(Settings.MinimumDelay, Settings.MaximumDelay, Settings.DelayMean, Settings.DelayStandardDeviation));
 
             bool isShiftUsed = false;
             if (filterResult.ShiftForStashing)
@@ -580,13 +580,13 @@ namespace Stashie
                 isShiftUsed = true;
             }
 
-            Mouse.LeftClick();
+            Input.Click(MouseButtons.Left);
             if (isShiftUsed)
             {
                 Keyboard.KeyUp(Keys.ShiftKey);
             }
 
-            yield return new WaitTime(Settings.StashItemDelay + Random.Shared.Next(0, 25));
+            yield return new WaitTime(Delay.GetDelay(Settings.MinimumDelay, Settings.MaximumDelay, Settings.DelayMean, Settings.DelayStandardDeviation));
         }
 
         #region Switching Stash Tabs
@@ -602,7 +602,7 @@ namespace Stashie
             else
                 yield return SwitchToTabViaDropdownMenu(tabIndex);
 
-            yield return Delay();
+            yield return new WaitTime(Delay.GetDelay(Settings.MinimumDelay, Settings.MaximumDelay, Settings.DelayMean, Settings.DelayStandardDeviation));
         }
 
         private IEnumerator SwitchToTabViaArrowKeys(int tabIndex, int numberOfTries = 1)
@@ -628,7 +628,7 @@ namespace Stashie
 
             if (GetIndexOfCurrentVisibleTab() != tabIndex)
             {
-                yield return Delay(20);
+                yield return new WaitTime(Delay.GetDelay(Settings.MinimumDelay, Settings.MaximumDelay, Settings.DelayMean, Settings.DelayStandardDeviation));
                 yield return SwitchToTabViaArrowKeys(tabIndex, numberOfTries + 1);
             }
         }
@@ -652,7 +652,7 @@ namespace Stashie
             yield return ClickElement(button.Center);
             while (!DropDownMenuIsVisible())
             {
-                yield return Delay(1);
+                yield return new WaitTime(Delay.GetDelay(Settings.MinimumDelay, Settings.MaximumDelay, Settings.DelayMean, Settings.DelayStandardDeviation));
             }
         }
 
@@ -679,9 +679,9 @@ namespace Stashie
             if (SliderPresent())
             {
                 var clicks = _stashCount - MaxShownSidebarStashTabs;
-                yield return Delay(3);
+                yield return new WaitTime(Delay.GetDelay(Settings.MinimumDelay, Settings.MaximumDelay, Settings.DelayMean, Settings.DelayStandardDeviation));
                 VerticalScroll(scrollUp: clickable, clicks: clicks);
-                yield return Delay(3);
+                yield return new WaitTime(Delay.GetDelay(Settings.MinimumDelay, Settings.MaximumDelay, Settings.DelayMean, Settings.DelayStandardDeviation));
             }
 
             DebugWindow.LogMsg($"{Name}: Moving to Stash Tab '{tabIndex}'.", 3, Color.LightGray);
@@ -697,17 +697,12 @@ namespace Stashie
         private IEnumerator Click(MouseButtons mouseButton = MouseButtons.Left)
         {
             Input.Click(mouseButton);
-            yield return Delay();
+            yield return new WaitTime(Delay.GetDelay(Settings.MinimumDelay, Settings.MaximumDelay, Settings.DelayMean, Settings.DelayStandardDeviation));
         }
 
         private void MoveMouseToElement(Vector2 targetPosition)
         {
             Mouse.MoveMouse(targetPosition + GameController.Window.GetWindowRectangle().TopLeft);
-        }
-
-        private IEnumerator Delay(int ms = 0)
-        {
-            yield return new WaitTime(Settings.ExtraDelay.Value + ms + Random.Shared.Next(0, 25));
         }
 
         private IEnumerator SwitchToTabViaDropdownMenu(int tabIndex)
