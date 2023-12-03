@@ -2,7 +2,7 @@
 
 namespace Stashie;
 
-public class Delay
+internal class Delay
 {
     public static int GetDelay(int minimumDelay, int maximumDelay, int mean, int standardDeviation) => (int)MathF.Max(minimumDelay, MathF.Min(maximumDelay, NextGaussian(mean, standardDeviation)));
     

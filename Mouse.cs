@@ -2,19 +2,20 @@
 using System.Runtime.InteropServices;
 using SharpDX;
 using Kalon;
+using Vector2 = System.Numerics.Vector2;
 
 namespace Stashie;
 
-public class Mouse
+internal class Mouse
 {
     [DllImport("user32.dll")]
     private static extern bool GetCursorPos(out Point cursorPosition);
 
-    public static Point GetCursorPosition()
+    private static Vector2 GetCursorPosition()
     {
         GetCursorPos(out var cursorPosition);
 
-        return cursorPosition;
+        return new Vector2(cursorPosition.X, cursorPosition.Y);
     }
     
     private static float NormalizeDistance(float distance, float maxDistance)
@@ -29,7 +30,7 @@ public class Mouse
     
     public static void MoveMouse(Vector2 targetPosition, int maxInterpolationDistance = 700, int minInterpolationDelay = 0, int maxInterpolationDelay = 300)
     {
-        Point currentPosition = GetCursorPosition();
+        Vector2 currentPosition = GetCursorPosition();
         
         float distance = Vector2.Distance(currentPosition, targetPosition);
         float normalizedDistance = NormalizeDistance(distance, maxInterpolationDistance);

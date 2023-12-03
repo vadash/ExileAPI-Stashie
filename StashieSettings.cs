@@ -37,21 +37,6 @@ namespace Stashie
     
         [Menu("Maximum Delay", "Maximum Delay in Milliseconds")]
         public RangeNode<int> MaximumDelay { get; set; } = new(150, 0, 1000);
-        
-        [Menu("Extra Delay", "Extra Delay between each Stashing Attempt in Milliseconds")]
-        public RangeNode<int> ExtraDelay { get; set; } = new(250, 0, 2000);
-
-        [Menu("Go to Stash Tab on Completion")]
-        public ToggleNode VisitTabWhenDone { get; set; } = new ToggleNode(false);
-
-        [Menu("Tab (Index)")]
-        public RangeNode<int> TabToVisitWhenDone { get; set; } = new(0, 0, 40);
-
-        [Menu("Go to Initial Tab on Completion")]
-        public ToggleNode BackToOriginalTab { get; set; } = new ToggleNode(true);
-
-        [Menu("Force Arrow Key Switching")]
-        public ToggleNode AlwaysUseArrow { get; set; } = new ToggleNode(true);
 
         public ToggleNode Enable { get; set; } = new ToggleNode(false);
 
