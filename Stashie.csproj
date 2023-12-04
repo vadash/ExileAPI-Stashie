@@ -27,8 +27,8 @@
     <Reference Include="ItemFilterLibrary">
       <HintPath>$(exapiPackage)\ItemFilterLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="Kalon">
-      <HintPath>$(exapiPackage)\Kalon.dll</HintPath>
+    <Reference Include="InputHumanizerLib">
+      <HintPath>$(exapiPackage)\InputHumanizerLib.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
