@@ -10,7 +10,7 @@ Feel free to fork this and make your own changes.
 ## Changes
 
 - Removed all the unnecessary features that were broken or not needed for my use.
-- Implemented ItemLibraryFilter and added JSON support for the Stashie configuration (SquirrelDetective).
+- Implemented ItemFilterLibrary and added JSON support for the Stashie configuration (SquirrelDetective).
 - Coroutines have been replaced with SyncTasks<>.
 - Implemented [InputHumanizer](https://github.com/sychotixdev/InputHumanizer) and [InputHumanizerLib](https://github.com/sychotixdev/InputHumanizerLib) for humanized input (sychotixdev).
 
