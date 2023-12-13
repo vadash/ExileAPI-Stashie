@@ -78,7 +78,17 @@ namespace Stashie
 
         public override void Render()
         {
-            if (!IsInGame(GameController) || !IsInventoryVisible() || !IsStashVisible()) return;
+            if (!IsInGame(GameController) || !IsMainInventoryVisible() || !IsStashVisible())
+            {
+                if (_currentOperation is not null)
+                {
+                    _currentOperation = null;
+                    Input.KeyUp(Keys.LControlKey);
+                    Input.KeyUp(Keys.ShiftKey);
+                }
+
+                return;
+            }
 
             if (_currentOperation != null)
             {
@@ -87,7 +97,7 @@ namespace Stashie
                 return;
             }
 
-            if (Input.IsKeyDown(Settings.DropHotkey.Value))
+            if (Settings.DropHotkey.PressedOnce())
             {
                 _currentOperation = StashItems();
             }
@@ -95,7 +105,7 @@ namespace Stashie
 
         private async SyncTask<bool> StashUpdater()
         {
-            await TaskUtils.CheckEveryFrame(() => IsInGame(GameController), new CancellationTokenSource(5000).Token);
+            await TaskUtils.CheckEveryFrame(() => IsInGame(GameController), new CancellationTokenSource(1000).Token);
 
             if (!IsInGame(GameController))
             {
@@ -104,7 +114,7 @@ namespace Stashie
 
             StashElement stashPanel = GameController.Game.IngameState?.IngameUi?.StashElement;
 
-            await TaskUtils.CheckEveryFrame(() => stashPanel is not null, new CancellationTokenSource(5000).Token);
+            await TaskUtils.CheckEveryFrame(() => stashPanel is not null, new CancellationTokenSource(250).Token);
 
             if (stashPanel is null)
             {
@@ -142,7 +152,7 @@ namespace Stashie
                 return false;
             }
 
-            if (await ParseItems() == false) return false;
+            ParseItems();
 
             if (_itemsToStash.Count == 0)
             {
@@ -178,20 +188,17 @@ namespace Stashie
                             if (await SwitchTab(filterResult.StashIndex) == false) continue;
                         }
 
-                        int visibleStashIndex = GetIndexOfCurrentVisibleTab();
-                        InventoryType visibleInventoryType = GetTypeOfCurrentVisibleStash();
-
                         await TaskUtils.CheckEveryFrame(() =>
                                 GameController.IngameState.IngameUi.StashElement
-                                    .AllInventories[visibleStashIndex] is not null &&
-                                visibleInventoryType != InventoryType.InvalidInventory,
-                            new CancellationTokenSource(5000).Token);
+                                    .AllInventories[GetIndexOfCurrentVisibleTab()] is not null &&
+                                GetTypeOfCurrentVisibleStash() != InventoryType.InvalidInventory,
+                            new CancellationTokenSource(250).Token);
 
                         if (GameController.IngameState.IngameUi.StashElement
-                                .AllInventories[visibleStashIndex] is null ||
-                            visibleInventoryType == InventoryType.InvalidInventory)
+                                .AllInventories[GetIndexOfCurrentVisibleTab()] is null ||
+                            GetTypeOfCurrentVisibleStash() == InventoryType.InvalidInventory)
                         {
-                            DebugWindow.LogError($"{Name}: Stash Tab Error. Index: {visibleStashIndex}.");
+                            DebugWindow.LogError($"{Name}: Stash Tab Error. Index: {GetIndexOfCurrentVisibleTab()}.");
                             return false;
                         }
 
@@ -234,20 +241,28 @@ namespace Stashie
             return true;
         }
 
-        private async SyncTask<bool> ParseItems()
+        private void ParseItems()
         {
-            ServerInventory inventory = GameController.Game.IngameState.Data.ServerData.PlayerInventories[0].Inventory;
-            IList<InventSlotItem> inventoryItems = inventory.InventorySlotItems;
+            ServerData serverData = GameController.Game.IngameState.Data.ServerData;
 
-            await TaskUtils.CheckEveryFrame(() => inventoryItems != null, new CancellationTokenSource(5000).Token);
+            IList<InventSlotItem> backpackInventoryItems = new List<InventSlotItem>();
 
-            if (inventoryItems == null)
+            if (IsBackpackInventoryVisible())
             {
-                DebugWindow.LogError($"{Name}: Unable to get Inventory Items.");
-                return false;
+                ServerInventory backpackInventory =
+                    serverData.PlayerInventories[(int)InventorySlotE.ExpandedMainInventory1].Inventory;
+                backpackInventoryItems = backpackInventory.InventorySlotItems;
             }
 
-            IList<InventSlotItem> sortedInventoryItems = inventoryItems
+            ServerInventory mainInventory = serverData.PlayerInventories[(int)InventorySlotE.MainInventory1].Inventory;
+            IList<InventSlotItem> mainInventoryItems = mainInventory.InventorySlotItems;
+            
+            IList<InventSlotItem> sortedBackpackInventoryItems = backpackInventoryItems
+                .OrderBy(item => item.PosX)
+                .ThenBy(item => item.PosY)
+                .ToList();
+
+            IList<InventSlotItem> sortedMainInventoryItems = mainInventoryItems
                 .OrderBy(item => item.PosX)
                 .ThenBy(item => item.PosY)
                 .ToList();
@@ -255,18 +270,29 @@ namespace Stashie
             _itemsToStash = new List<FilterResult>();
             _clickWindowOffset = GameController.Window.GetWindowRectangle().TopLeft;
 
-            foreach (InventSlotItem inventoryItem in sortedInventoryItems)
+            foreach (InventSlotItem backpackInventoryItem in sortedBackpackInventoryItems)
             {
-                if (inventoryItem.Item is null || inventoryItem is { Address: 0 }) continue;
-                if (CheckIgnoreCells(inventoryItem)) continue;
+                if (backpackInventoryItem.Item is null || backpackInventoryItem is { Address: 0 }) continue;
+                if (CheckExpandedIgnoreCells(backpackInventoryItem)) continue;
 
-                ItemData itemData = new ItemData(inventoryItem.Item, GameController);
-                FilterResult filterResult = CheckFilters(itemData, CalculateClickPosition(inventoryItem));
+                ItemData itemData = new ItemData(backpackInventoryItem.Item, GameController);
+                FilterResult filterResult = CheckFilters(itemData,
+                    CalculateClickPosition(backpackInventoryItem, InventorySlotE.ExpandedMainInventory1));
 
                 if (filterResult is not null) _itemsToStash.Add(filterResult);
             }
 
-            return true;
+            foreach (InventSlotItem mainInventoryItem in sortedMainInventoryItems)
+            {
+                if (mainInventoryItem.Item is null || mainInventoryItem is { Address: 0 }) continue;
+                if (CheckIgnoreCells(mainInventoryItem)) continue;
+
+                ItemData itemData = new ItemData(mainInventoryItem.Item, GameController);
+                FilterResult filterResult = CheckFilters(itemData,
+                    CalculateClickPosition(mainInventoryItem, InventorySlotE.MainInventory1));
+
+                if (filterResult is not null) _itemsToStash.Add(filterResult);
+            }
         }
 
         private async SyncTask<bool> SwitchTab(int tabIndex)
@@ -321,9 +347,15 @@ namespace Stashie
             return gameController?.Game?.IngameState?.InGame ?? false;
         }
 
-        private bool IsInventoryVisible()
+        private bool IsMainInventoryVisible()
         {
             return GameController?.IngameState?.IngameUi?.InventoryPanel?.IsVisible ?? false;
+        }
+
+        private bool IsBackpackInventoryVisible()
+        {
+            return GameController?.IngameState?.IngameUi?.InventoryPanel[InventoryIndex.PlayerExpandedInventory]
+                ?.IsVisible ?? false;
         }
 
         private bool IsStashVisible()
@@ -412,7 +444,8 @@ namespace Stashie
             };
             try
             {
-                var inventoryServer = GameController.IngameState.Data.ServerData.PlayerInventories[0];
+                var inventoryServer =
+                    GameController.IngameState.Data.ServerData.PlayerInventories[(int)InventorySlotE.MainInventory1];
 
                 foreach (var item in inventoryServer.Inventory.InventorySlotItems)
                 {
@@ -424,6 +457,22 @@ namespace Stashie
                     for (var y = 0; y < itemSizeY; y++)
                     for (var x = 0; x < itemSizeX; x++)
                         Settings.IgnoredCells[y + inventPosY, x + inventPosX] = 1;
+                }
+
+                var backpackServer =
+                    GameController.IngameState.Data.ServerData.PlayerInventories[
+                        (int)InventorySlotE.ExpandedMainInventory1];
+
+                foreach (var item in backpackServer.Inventory.InventorySlotItems)
+                {
+                    var baseC = item.Item.GetComponent<Base>();
+                    var itemSizeX = baseC.ItemCellsSizeX;
+                    var itemSizeY = baseC.ItemCellsSizeY;
+                    var inventPosX = item.PosX;
+                    var inventPosY = item.PosY;
+                    for (var y = 0; y < itemSizeY; y++)
+                    for (var x = 0; x < itemSizeX; x++)
+                        Settings.IgnoredExpandedCells[y + inventPosY, x + inventPosX] = 1;
                 }
             }
             catch (Exception e)
@@ -458,18 +507,37 @@ namespace Stashie
             {
                 DebugWindow.LogError(e.ToString(), 10);
             }
-
+            
+            ImGui.NewLine();
+            ImGui.Text("Backpack Inventory");
             var number = 1;
+            for (var i = 0; i < 5; i++)
+            for (var j = 0; j < 4; j++)
+            {
+                var toggled = Convert.ToBoolean(Settings.IgnoredExpandedCells[i, j]);
+                if (ImGui.Checkbox($"##{number}IgnoredBackpackInventoryCells", ref toggled))
+                    Settings.IgnoredExpandedCells[i, j] ^= 1;
+
+                if ((number - 1) % 4 < 3) ImGui.SameLine();
+
+                number += 1;
+            }
+            ImGui.NewLine();
+            ImGui.Text("Main Inventory");
+            number = 1;
             for (var i = 0; i < 5; i++)
             for (var j = 0; j < 12; j++)
             {
                 var toggled = Convert.ToBoolean(Settings.IgnoredCells[i, j]);
-                if (ImGui.Checkbox($"##{number}IgnoredCells", ref toggled)) Settings.IgnoredCells[i, j] ^= 1;
+                if (ImGui.Checkbox($"##{number}IgnoredMainInventoryCells", ref toggled))
+                    Settings.IgnoredCells[i, j] ^= 1;
 
                 if ((number - 1) % 12 < 11) ImGui.SameLine();
 
                 number += 1;
             }
+            
+            ImGui.NewLine();
         }
 
         private void GenerateMenu()
@@ -556,21 +624,42 @@ namespace Stashie
                 };
         }
 
-        private Vector2 CalculateClickPosition(InventSlotItem inventSlotItem)
+        private Vector2 CalculateClickPosition(InventSlotItem inventSlotItem, InventorySlotE inventorySlot)
         {
-            var inventoryPanelRectF = GameController.IngameState.IngameUi.InventoryPanel[InventoryIndex.PlayerInventory]
-                .GetClientRect();
+            Vector2 baseClickPosition = new Vector2();
 
-            var cellWidth = inventoryPanelRectF.Width / 12;
-            var cellHeight = inventoryPanelRectF.Height / 5;
+            if (inventorySlot == InventorySlotE.ExpandedMainInventory1)
+            {
+                var backpackInventoryPanelRectF = GameController.IngameState.IngameUi
+                    .InventoryPanel[InventoryIndex.PlayerExpandedInventory]
+                    .GetClientRect();
 
-            Vector2 baseClickPosition = new Vector2(
-                inventoryPanelRectF.Location.X + (cellWidth / 2) + (inventSlotItem.PosX * cellWidth),
-                inventoryPanelRectF.Location.Y + (cellHeight / 2) + (inventSlotItem.PosY * cellHeight)
-            );
+                var cellWidth = backpackInventoryPanelRectF.Width / 4;
+                var cellHeight = backpackInventoryPanelRectF.Height / 5;
 
-            float randomXOffset = Random.Shared.Next(-10, 11);
-            float randomYOffset = Random.Shared.Next(-10, 11);
+                baseClickPosition = new Vector2(
+                    backpackInventoryPanelRectF.Location.X + (cellWidth / 2) + (inventSlotItem.PosX * cellWidth),
+                    backpackInventoryPanelRectF.Location.Y + (cellHeight / 2) + (inventSlotItem.PosY * cellHeight)
+                );
+            }
+
+            if (inventorySlot == InventorySlotE.MainInventory1)
+            {
+                var mainInventoryPanelRectF = GameController.IngameState.IngameUi
+                    .InventoryPanel[InventoryIndex.PlayerInventory]
+                    .GetClientRect();
+
+                var cellWidth = mainInventoryPanelRectF.Width / 12;
+                var cellHeight = mainInventoryPanelRectF.Height / 5;
+
+                baseClickPosition = new Vector2(
+                    mainInventoryPanelRectF.Location.X + (cellWidth / 2) + (inventSlotItem.PosX * cellWidth),
+                    mainInventoryPanelRectF.Location.Y + (cellHeight / 2) + (inventSlotItem.PosY * cellHeight)
+                );
+            }
+
+            float randomXOffset = Random.Shared.Next(-20, 20);
+            float randomYOffset = Random.Shared.Next(-20, 20);
 
             Vector2 randomizedClickPosition = new Vector2(
                 baseClickPosition.X + randomXOffset,
@@ -590,6 +679,18 @@ namespace Stashie
             if (inventPosY is < 0 or >= 5) return true;
 
             return Settings.IgnoredCells[inventPosY, inventPosX] != 0;
+        }
+
+        private bool CheckExpandedIgnoreCells(InventSlotItem inventItem)
+        {
+            var inventPosX = inventItem.PosX;
+            var inventPosY = inventItem.PosY;
+
+            if (inventPosX is < 0 or >= 4) return true;
+
+            if (inventPosY is < 0 or >= 5) return true;
+
+            return Settings.IgnoredExpandedCells[inventPosY, inventPosX] != 0;
         }
 
         private FilterResult CheckFilters(ItemData itemData, Vector2 clickPosition)
