@@ -107,10 +107,14 @@
           "FilterName": "Normal (1)",
           "RawQuery": [ "FindMods(\"InfectedMap\").Any(Values[0] >= -40000)" ]
         },
+        {
+          "FilterName": "Other maps ($)",
+          "RawQuery": [ "IsMap" ]
+        },
       ]
     },
     {
-      "MenuName": "[4N] Divinations cards + Quality gems",
+      "MenuName": "[4N] Divination + gems + essenses",
       "Filters": [
         {
           "FilterName": "Other divination cards (2)",
@@ -119,6 +123,10 @@
         {
           "FilterName": "Other gems (2)",
           "RawQuery": [ "ClassName.Contains(\" Skill Gem\")" ]
+        },
+        {
+          "FilterName": "Screaming/Shrieking essences (2 or E)",
+          "RawQuery": [ "BaseName.Contains(\"Screaming Essence\") || BaseName.Contains(\"Shrieking Essence\")" ]
         },
       ]
     },
@@ -133,6 +141,10 @@
           "FilterName": "Ravaged (D)",
           "RawQuery": [ "FindMods(\"UberInfectedMap\").Any(Values[0] >= -40000)" ]
         },
+        {
+          "FilterName": "Deafening essences (D or E)",
+          "RawQuery": [ "BaseName.Contains(\"Deafening Essence\")" ]
+        },
       ]
     },
     {
@@ -141,6 +153,18 @@
         {
           "FilterName": "Use for agent",
           "RawQuery": [ "false" ]
+        },
+      ]
+    },
+    {
+      "MenuName": "[7S] Essences",
+      "Filters": [
+        {
+          "FilterName": "All (E or 2)",
+          "RawQuery": [
+            "ContainsString(BaseName, new string[] { \"Essence\", \"Remnant\" }) ",
+            "&& !ClassName.Contains(\"Skill Gem\") && BaseName != \"Primeval Remnant\""
+          ]
         },
       ]
     },
