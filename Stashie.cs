@@ -333,6 +333,27 @@ namespace Stashie
 
                 if (filterResult is not null) _itemsToStash.Add(filterResult);
             }
+
+            // Hold to biggest stack of portal and ID scrolls
+            KeepLargestStackItem(_itemsToStash, "Scroll of Wisdom");
+            KeepLargestStackItem(_itemsToStash, "Portal Scroll");
+        }
+
+        private static void KeepLargestStackItem(List<FilterResult> itemList, string itemName)
+        {
+            var items = itemList?.Where(item => item?.ItemData?.BaseName == itemName)?.ToList();
+            if (items?.Count <= 0) return;
+            items?.Sort((o1, o2) => o1?.ItemData?.StackInfo?.Count < o2?.ItemData?.StackInfo?.Count ? 1 : -1);
+            var maxStackItem = items?[0];
+            foreach (var dropItem in itemList?.ToList())
+            {
+                if (dropItem?.ItemData?.BaseName == maxStackItem?.ItemData?.BaseName &&
+                    dropItem?.ItemData?.StackInfo?.Count == maxStackItem?.ItemData?.StackInfo?.Count)
+                {
+                    itemList?.Remove(dropItem);
+                    break;
+                }
+            }
         }
 
         private async SyncTask<bool> SwitchTab(int tabIndex)
