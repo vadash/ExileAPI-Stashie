@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using ExileCore;
 using ExileCore.PoEMemory.Components;
 using ExileCore.PoEMemory.Elements;
@@ -68,6 +69,45 @@ namespace Stashie
             catch (Exception e)
             {
                 LogError($"{Name}: Failed to get Stash Names: {e}");
+            }
+        }
+
+        public override void ReceiveEvent(string eventId, object args)
+        {
+            if (!Settings.Enable.Value) return;
+
+            switch (eventId)
+            {
+                case "switch_to_tab":
+                    HandleSwitchToTabEvent(args);
+                    break;
+                case "start_stashie":
+                    _currentOperation ??= StashItems();
+                    break;
+            }
+        }
+
+        private void HandleSwitchToTabEvent(object tab)
+        {
+            switch (tab)
+            {
+                case int index:
+                    DebugWindow.LogMsg($"{Name}: Switching to tab with index: {index}");
+                    _currentOperation ??= SwitchTab(index);
+                    break;
+                case string name:
+                    if (!_renamedAllStashNames.Contains(name))
+                    {
+                        DebugWindow.LogMsg($"{Name}: can't find tab with name '{name}'.");
+                        break;
+                    }
+                    var tempIndex = _renamedAllStashNames.IndexOf(name);
+                    _currentOperation ??= SwitchTab(tempIndex);
+                    DebugWindow.LogMsg($"{Name}: Switching to tab with index: {tempIndex} ('{name}').");
+                    break;
+                default:
+                    DebugWindow.LogMsg("The received argument is not a string or an integer.");
+                    break;
             }
         }
 
