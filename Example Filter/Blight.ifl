@@ -57,6 +57,18 @@
           "FilterName": "Golden oil ($ or C)",
           "RawQuery": [ "Path.Contains(\"Mushrune\") && ContainsString(BaseName, new string[] { \"Golden Oil\" })" ]
         },
+        {
+          "FilterName": "Tainted oil ($)",
+          "RawQuery": [ "Path.Contains(\"Mushrune\") && ContainsString(BaseName, new string[] { \"Tainted Oil\" })" ]
+        },
+        {
+          "FilterName": "Rogue's marker ($)",
+          "RawQuery": [ "ContainsString(BaseName, new string[] { \"Rogue's Marker \" })" ]
+        },
+        {
+          "FilterName": "Other top ($)",
+          "RawQuery": [ "ContainsString(BaseName, new string[] { \"Reliquary Key\", \"Winged\", \"Breachstone\", \"Essence of Hysteria\", \"Essence of Insanity\", \"Essence of Delirium\", \"Essence of Horror\", \"Regrading Lens\", \"Surveyor's Compass\", \"Anomalous\", \"Divergent\", \"Phantasmal\", \"Delirium\", \"Empower\", \"Enlighten\", \"Enhance\" })" ]
+        }
       ]
     },
     {
@@ -71,10 +83,10 @@
           ]
         },
         {
-          "FilterName": "All non golden oils (C)",
+          "FilterName": "All non golden/tainted oils (C)",
           "RawQuery": [
             "Path.Contains(\"Mushrune\")",
-            "&& !ContainsString(BaseName, new string[] { \"Golden Oil\" })"
+            "&& !ContainsString(BaseName, new string[] { \"Golden Oil\", \"Tainted Oil\" })"
           ]
         },
         {
@@ -97,12 +109,16 @@
             "&& !ContainsString(BaseName, new string[] { \"Primeval Remnant\" })",
             "&& !ContainsString(Path, new string[] { \"CurrencyAfflictionShard\" })"
           ]
-        }
+        },
       ]
     },
     {
       "MenuName": "[3N] Blight maps",
       "Filters": [
+        {
+          "FilterName": "Ravaged (D)",
+          "RawQuery": [ "FindMods(\"UberInfectedMap\").Any(Values[0] >= -40000)" ]
+        },
         {
           "FilterName": "Normal (1)",
           "RawQuery": [ "FindMods(\"InfectedMap\").Any(Values[0] >= -40000)" ]
@@ -110,7 +126,7 @@
         {
           "FilterName": "Other maps ($)",
           "RawQuery": [ "IsMap" ]
-        },
+        }
       ]
     },
     {
@@ -136,10 +152,6 @@
         {
           "FilterName": "Other delve (D)",
           "RawQuery": [ "Path.Contains(\"CurrencyDelveCrafting\") || ClassName == \"DelveStackableSocketableCurrency\"" ]
-        },
-        {
-          "FilterName": "Ravaged (D)",
-          "RawQuery": [ "FindMods(\"UberInfectedMap\").Any(Values[0] >= -40000)" ]
         },
         {
           "FilterName": "Deafening essences (D or E)",
