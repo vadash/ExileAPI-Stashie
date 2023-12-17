@@ -38,6 +38,6 @@
       <PackageReference ExcludeAssets="runtime" />
   </ItemDefinitionGroup>
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy /Y &quot;$(ProjectDir)\Example Filter\*.ifl&quot; &quot;$(exapiPackage)\config\Stashie\&quot;&#xD;&#xA;" />
+    <Exec Command="xcopy /Y &quot;$(ProjectDir)\Example Filter\*.ifl&quot; &quot;$(exapiPackage)\config\Stashie\&quot;&#xD;&#xA;rmdir /S /Q &quot;$(exapiPackage)\Plugins\Compiled\Stashie\runtimes&quot;&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;" />
   </Target>
 </Project>
