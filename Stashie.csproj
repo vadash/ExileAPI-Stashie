@@ -37,4 +37,7 @@
   <ItemDefinitionGroup>
       <PackageReference ExcludeAssets="runtime" />
   </ItemDefinitionGroup>
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy /Y &quot;$(ProjectDir)\Example Filter\*.ifl&quot; &quot;$(exapiPackage)\config\Stashie\&quot;&#xD;&#xA;" />
+  </Target>
 </Project>
