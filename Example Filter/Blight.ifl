@@ -1,0 +1,148 @@
+// Made by vadash for 3.23
+// https://github.com/exApiTools/ItemFilter/blob/main/README.md
+// Optimized for 250 pts without sale (first blood + 50 pts)
+// P = Premium, N = normal, S = special, (C) - extra slot in currency tab, (O) - any other tab,
+// 1$ premium - Priority loot ($ and $$). Can be split into $ and $$ premium tabs for easier maintenacy
+// 2C special currency (C). 1 slots for most common fossils and some oils
+// 3E special essences (E). 3 slots will be used for common fossils
+// 4F special fragments (F)
+// 5 normal - Blight Maps
+// 6 normal - Quality gems + Divination cards
+// 7 premium - Delve + uber maps. Set fixed price
+// 8 premium tab for agent flipping (flip)
+{
+  "ParentMenu": [
+    {
+      "MenuName": "[0P] Top loot",
+      "Filters": [
+        {
+          "FilterName": "Good div cards ($)",
+          "RawQuery": [
+            "ClassName == \"DivinationCard\" && ContainsString(BaseName, new string[] { \"The Apothecary\", \"House of Mirrors\", \"The Price of Devotion\", \"The Doctor\", \"The Insane Cat\", \"The Demon\", \"Unrequited Love\", \"The Fiend\", \"I See Brothers\", \"Brother's Gift\", \"Fire Of Unknown Origin\", \"The Immortal\", \"The Nurse\", \"The Shieldbearer\", \"The Endless Darkness\", \"Love Through Ice\", \"The Cheater\", \"Seven Years Bad Luck\", \"The Price of Loyalty\", \"The Chosen\", \"Choking Guilt\", \"The Sephirot\", \"Wealth and Power\", \"The Soul\", \"The Progeny of Lunaris\", \"Divine Beauty\", \"Misery in Darkness\", \"The Strategist\", \"Desecrated Virtue\", \"Tranquillity\", \"The Samurai's Eye\", \"The Dragon's Heart\", \"The Last One Standing\", \"Brother's Stash\", \"Succor of the Sinless\", \"The Enlightened\", \"The Greatest Intentions\", \"The Academic\", \"The Patient\", \"The Gulf\", \"The Garish Power\", \"The World Eater\", \"Darker Half\", \"The Artist\", \"Gemcutter's Mercy\", \"The Eye of Terror\", \"Home\", \"Luminous Trove\", \"Deadly Joy\", \"Assassin's Gift\", \"The Fortunate\", \"Nook's Crown\", \"Matryoshka\", \"Who Asked\" })"
+          ]
+        },
+        {
+          "FilterName": "Good L21 Q23 ($)",
+          "RawQuery": [
+            "ClassName.Contains(\"Skill Gem\") && GemInfo.Level >= 21 && GemInfo.Level <= 21 && ItemQuality >= 23 && ItemQuality <= 23 && ContainsString(BaseName, new string[] { \"Divine Ire of Disintegration\", \"Penance Brand of Dissipation\", \"Storm Brand of Indecision\", \"Caustic Arrow of Poison\", \"Ice Spear\", \"Summon Raging Spirit of Enormity\", \"Hatred\", \"Storm Brand\", \"Righteous Fire of Arcane Devotion\", \"Spark of the Nova\", \"Crackling Lance of Branching\", \"Scourge Arrow of Menace\", \"Summon Raging Spirit\", \"Toxic Rain\", \"Tornado Shot\", \"Righteous Fire\", \"Grace\", \"Burning Arrow\", \"Scorching Ray\", \"Flame Dash\", \"Penance Brand\", \"Sniper's Mark\", \"Energy Blade\", \"Viper Strike of the Mamba\", \"Divine Ire\", \"Explosive Trap\", \"Tempest Shield\", \"Explosive Arrow\", \"Purity of Lightning\", \"Precision\", \"Icicle Mine\", \"Summon Carrion Golem\", \"Hexblast\", \"Lightning Conduit\", \"Seismic Trap\", \"Malevolence\", \"Conductivity\", \"Detonate Dead\", \"Cluster Traps Support\", \"Lightning Arrow\", \"Added Chaos Damage Support\", \"Herald of Agony\", \"Smite\", \"Summon Holy Relic\", \"Charged Traps Support\", \"Flesh Offering\", \"Explosive Concoction\", \"Withering Touch Support\", \"Trap Support\", \"Summon Skitterbots\", \"Desecrate\", \"Despair\", \"Fire Trap\", \"Swift Assembly Support\", \"Ice Trap\", \"Void Manipulation Support\", \"Kinetic Blast\", \"Forbidden Rite\", \"Blade Vortex\", \"Impending Doom Support\", \"Reap\", \"Chance to Poison Support\", \"Wither\", \"Advanced Traps Support\", \"Discipline\", \"Siphoning Trap\", \"Void Sphere\", \"Alchemist's Mark\", \"Blast Rain\", \"Lightning Spire Trap\", \"Scourge Arrow\", \"Plague Bearer\", \"Soulrend\", \"Withering Step\", \"Lightning Trap\", \"Conversion Trap\", \"Bane\" })"
+          ]
+        },
+        {
+          "FilterName": "Good L21 Q20 ($)",
+          "RawQuery": [
+            "ClassName.Contains(\"Skill Gem\") && GemInfo.Level >= 21 && GemInfo.Level <= 21 && ItemQuality >= 20 && ItemQuality <= 20 && ContainsString(BaseName, new string[] { \"Vaal Smite\", \"Vaal Caustic Arrow\", \"Vaal Haste\", \"Vaal Ice Nova\", \"Vaal Blade Vortex\", \"Vaal Summon Skeletons\", \"Vaal Righteous Fire\", \"Vaal Venom Gyre\", \"Vaal Arc\", \"Vaal Detonate Dead\", \"Penance Brand of Dissipation\", \"Vaal Rejuvenation Totem\", \"Armageddon Brand of Volatility\", \"Frostblink of Wintry Blast\", \"Firestorm of Meteors\", \"Ball Lightning of Orbiting\", \"Bladefall of Impaling\", \"Void Sphere of Rending\", \"Hexblast of Contradiction\", \"Vaal Lightning Arrow\", \"Exsanguinate of Transmission\", \"Cold Snap of Power\", \"Vaal Reap\", \"Righteous Fire of Arcane Devotion\", \"Ice Trap of Hollowness\", \"Seismic Trap of Swells\", \"Raise Zombie of Falling\", \"Reave of Refraction\", \"Storm Brand of Indecision\", \"Flicker Strike of Power\", \"Soulrend of Reaping\", \"Cyclone of Tumult\", \"Lightning Conduit of the Heavens\", \"Frost Bomb of Forthcoming\", \"Blade Blast of Dagger Detonation\", \"Rain of Arrows of Artillery\", \"Hexblast of Havoc\", \"Spark of the Nova\", \"Raise Zombie of Slamming\", \"Summon Stone Golem of Hordes\", \"Elemental Penetration Support\", \"Flameblast of Celerity\", \"Summon Raging Spirit of Enormity\", \"Ethereal Knives of the Massacre\", \"Ice Spear of Splitting\", \"Volatile Dead of Seething\", \"Animate Guardian of Smiting\", \"Arc of Surging\", \"Ball Lightning of Static\", \"Divine Ire of Disintegration\", \"Ethereal Knives of Lingering Blades\", \"Pyroclast Mine of Sabotage\", \"Ice Nova of Frostbolts\", \"Shattering Steel of Ammunition\", \"Explosive Trap of Shrapnel\", \"Storm Rain of the Fence\", \"Explosive Trap of Magnitude\", \"Crackling Lance of Branching\", \"Bladefall of Volleys\", \"Lightning Trap of Sparking\", \"Blade Blast of Unloading\", \"Detonate Dead of Chain Reaction\", \"Ice Nova of Deep Freeze\", \"Raise Spectre\", \"Penance Brand of Conduction\", \"Animate Weapon of Self Reflection\", \"Power Siphon of the Archmage\", \"Summon Raging Spirit\", \"Animate Weapon of Ranged Arms\", \"Summon Carrion Golem of Hordes\", \"Determination\", \"Icicle Mine of Fanning\", \"Bladestorm of Uncertainty\", \"Rain of Arrows of Saturation\", \"Summon Reaper of Revenants\", \"Summon Skeletons of Archers\", \"Animate Guardian\", \"Anger\", \"Purity of Elements\", \"Caustic Arrow of Poison\", \"Tornado Shot of Cloudburst\", \"Consecrated Path of Endurance\", \"Barrage of Volley Fire\", \"Summon Skeletons of Mages\", \"Frenzy of Onslaught\", \"Flame Dash of Return\", \"Lacerate of Butchering\", \"Icicle Mine of Sabotage\", \"Ice Crash of Cadence\", \"Explosive Concoction of Destruction\", \"Crackling Lance of Disintegration\", \"Raise Spectre of Transience\", \"Galvanic Arrow of Energy\", \"Split Arrow of Splitting\", \"Summon Stone Golem of Safeguarding\", \"Blade Trap of Greatswords\", \"Absolution of Inspiring\", \"Leap Slam of Groundbreaking\", \"Frost Bomb of Instability\", \"Vitality\", \"Scourge Arrow of Menace\", \"Splitting Steel of Ammunition\", \"Splitting Steel\", \"Spark of Unpredictability\", \"Flameblast of Contraction\", \"Cremation of the Volcano\", \"Firestorm of Pelting\", \"Sniper's Mark\", \"Arc of Oscillating\", \"Energy Leech Support\", \"Corrupting Fever\", \"Lacerate of Haemorrhage\", \"Explosive Arrow\", \"Ice Spear\", \"Pride\", \"Wild Strike of Extremes\", \"Boneshatter\", \"Raise Zombie\", \"Shockwave Totem\", \"Boneshatter of Complex Trauma\", \"Hexblast\", \"Defiance Banner\", \"Purity of Lightning\", \"Tornado Shot\", \"Toxic Rain of Sporeburst\", \"Ice Bite Support\", \"Blade Vortex of the Scythe\", \"Boneshatter of Carnage\", \"Wrath\", \"Purity of Fire\", \"Herald of Ash\", \"Concentrated Effect Support\", \"Physical to Lightning Support\", \"Multistrike Support\", \"Hypothermia Support\", \"Spark\", \"Tempest Shield\", \"Seismic Trap\", \"Toxic Rain\", \"Pulverise Support\", \"Inspiration Support\", \"Petrified Blood\", \"Energy Blade\", \"Flamewood Support\", \"Lightning Arrow of Electrocution\", \"Volatile Dead of Confinement\", \"Detonate Dead of Scavenging\", \"Cleave of Rage\", \"Contagion of Subsiding\", \"Summon Ice Golem of Shattering\", \"Bonechill Support\", \"Arrogance Support\", \"Herald of Agony\", \"Volatility Support\", \"Icicle Mine\", \"Purity of Ice\", \"Increased Critical Damage Support\", \"High-Impact Mine Support\", \"Explosive Trap\", \"Frost Blades\", \"Herald of Thunder\", \"Elemental Army Support\", \"Zealotry\", \"Guardian's Blessing Support\", \"Divine Blessing Support\", \"Herald of Ice\", \"Charged Mines Support\", \"Ethereal Knives\", \"Grace\", \"Minefield Support\", \"Infused Channelling Support\", \"Ballista Totem Support\", \"Efficacy Support\", \"Malevolence\", \"Convocation\", \"Minion Life Support\", \"Righteous Fire\", \"Siege Ballista\", \"Meat Shield Support\", \"Faster Attacks Support\", \"Tectonic Slam of Cataclysm\", \"Summon Stone Golem\", \"Dread Banner\", \"Pierce Support\", \"Precision\", \"Despair\", \"Cruelty Support\", \"Fortify Support\", \"Ignite Proliferation Support\", \"Trap and Mine Damage Support\", \"Steelskin\", \"Greater Volley Support\", \"Trinity Support\", \"Manaforged Arrows Support\", \"Spellblade Support\", \"Power Charge On Critical Support\", \"Punishment\", \"Hatred\", \"Summon Skitterbots\", \"Chain Support\", \"Phase Run\", \"Ruthless Support\", \"Shockwave Support\", \"Summon Carrion Golem\", \"Swiftbrand Support\", \"Exsanguinate\", \"Increased Duration Support\", \"Frenzy\", \"Frostbite\", \"Increased Critical Strikes Support\", \"Culling Strike Support\", \"Discipline\", \"Nightblade Support\", \"Blood Rage\", \"Greater Multiple Projectiles Support\", \"Flame Dash\", \"Cast when Damage Taken Support\", \"Berserk\", \"Eye of Winter\", \"Mark On Hit Support\", \"Sigil of Power\", \"Freezing Pulse\", \"Storm Rain\", \"Arcane Surge Support\", \"Fire Trap\", \"Faster Casting Support\", \"Molten Shell\", \"Haste\", \"Second Wind Support\", \"Mana Leech Support\", \"Storm Burst\", \"Storm Brand\", \"Artillery Ballista\", \"Arcane Cloak\", \"Momentum Support\", \"Damage on Full Life Support\", \"Lifetap Support\", \"Bladefall\", \"Rejuvenation Totem\", \"Vile Toxins Support\", \"Impale Support\", \"Withering Touch Support\", \"Unleash Support\", \"Frostblink\", \"Returning Projectiles Support\", \"Elemental Damage with Attacks Support\", \"Cyclone\", \"Assassin's Mark\", \"Item Rarity Support\", \"Spell Totem Support\", \"Life Gain on Hit Support\", \"Less Duration Support\", \"Feeding Frenzy Support\", \"General's Cry\", \"Predator Support\", \"Impending Doom Support\", \"Flammability\", \"Blast Rain\", \"Soul Link\", \"Desecrate\", \"Elemental Weakness\", \"Blade Flurry\", \"Kinetic Blast\", \"Combustion Support\", \"Arrow Nova Support\", \"Divine Ire\", \"Wave of Conviction\", \"Spell Echo Support\", \"Lightning Arrow\", \"Maim Support\", \"Lightning Warp\", \"Bone Offering\", \"Focused Ballista Support\", \"Chance to Poison Support\", \"Summon Flame Golem\", \"Void Manipulation Support\", \"Trap Support\", \"Flicker Strike\", \"Deadly Ailments Support\", \"Swift Affliction Support\", \"Minion Damage Support\", \"Generosity Support\", \"Mirage Archer Support\", \"Decoy Totem\", \"Charged Traps Support\", \"Swift Assembly Support\", \"Corrupting Cry Support\" })"
+          ]
+        },
+        {
+          "FilterName": "Good L20 Q23 ($)",
+          "RawQuery": [
+            "ClassName.Contains(\"Skill Gem\") && GemInfo.Level >= 1 && GemInfo.Level <= 20 && ItemQuality >= 23 && ItemQuality <= 23 && ContainsString(BaseName, new string[] { \"Awakened Multistrike Support\", \"Awakened Generosity Support\", \"Awakened Fork Support\", \"Awakened Chain Support\", \"Awakened Greater Multiple Projectiles Support\", \"Awakened Spell Echo Support\", \"Awakened Spell Cascade Support\", \"Awakened Unbound Ailments Support\", \"Molten Strike of the Zenith\", \"Awakened Unleash Support\", \"Awakened Minion Damage Support\", \"Awakened Elemental Damage with Attacks Support\", \"Awakened Increased Area of Effect Support\", \"Vaal Smite\", \"Awakened Void Manipulation Support\", \"Awakened Spell Cascade Support\", \"Awakened Vicious Projectiles Support\", \"Awakened Deadly Ailments Support\", \"Awakened Blasphemy Support\", \"Summon Ice Golem of Hordes\", \"Vaal Lightning Strike\", \"Awakened Added Lightning Damage Support\", \"Awakened Brutality Support\", \"Awakened Increased Area of Effect Support\", \"Awakened Burning Damage Support\", \"Awakened Elemental Focus Support\", \"Frostblink of Wintry Blast\", \"Awakened Swift Affliction Support\", \"Awakened Melee Physical Damage Support\", \"Awakened Elemental Damage with Attacks Support\", \"Awakened Lightning Penetration Support\", \"Awakened Added Cold Damage Support\", \"Awakened Cold Penetration Support\", \"Awakened Added Fire Damage Support\", \"Awakened Void Manipulation Support\", \"Awakened Ancestral Call Support\", \"Awakened Lightning Penetration Support\", \"Awakened Unbound Ailments Support\", \"Awakened Controlled Destruction Support\", \"Awakened Cast While Channelling Support\", \"Awakened Ancestral Call Support\", \"Awakened Melee Splash Support\", \"Awakened Added Chaos Damage Support\", \"Awakened Brutality Support\", \"Awakened Cast While Channelling Support\", \"Awakened Fire Penetration Support\", \"Awakened Added Fire Damage Support\", \"Awakened Deadly Ailments Support\", \"Awakened Swift Affliction Support\", \"Vaal Venom Gyre\", \"Detonate Dead of Scavenging\", \"Awakened Vicious Projectiles Support\", \"Vaal Discipline\", \"Awakened Hextouch Support\", \"Vaal Reap\", \"Awakened Burning Damage Support\", \"Viper Strike of the Mamba\", \"Ice Nova of Frostbolts\", \"Awakened Elemental Focus Support\", \"Infernal Legion Support\", \"Awakened Fire Penetration Support\", \"Awakened Added Cold Damage Support\", \"Elemental Penetration Support\", \"Awakened Added Lightning Damage Support\", \"Physical to Lightning Support\", \"Vitality\", \"Tempest Shield\", \"Vaal Blade Vortex\", \"Second Wind Support\", \"Arcanist Brand\", \"Awakened Cold Penetration Support\", \"Vaal Absolution\", \"Caustic Arrow of Poison\", \"Ice Spear of Splitting\", \"Raise Zombie of Slamming\", \"Icicle Mine of Sabotage\", \"Earthquake of Amplification\", \"Summon Stone Golem of Hordes\", \"Lacerate of Haemorrhage\", \"Mirror Arrow of Bombarding Clones\", \"Bladefall of Impaling\", \"Berserk\", \"Glacial Cascade of the Fissure\", \"Momentum Support\", \"Penance Brand of Dissipation\", \"Vaal Caustic Arrow\", \"Phase Run\", \"Smoke Mine\", \"Smite of Divine Judgement\", \"Herald of Ash\", \"Punishment\", \"Charged Traps Support\", \"Feeding Frenzy Support\", \"Vaal Lightning Arrow\", \"Iron Will Support\", \"Desecrate\", \"Flame Dash\", \"Power Charge On Critical Support\", \"Convocation\", \"Sigil of Power\", \"Volatile Dead\", \"Frostbite\", \"Point Blank Support\", \"Summon Skitterbots\", \"Energy Blade\", \"Blade Vortex of the Scythe\", \"Volatile Dead of Seething\", \"Explosive Concoction of Destruction\", \"Pyroclast Mine of Sabotage\", \"Petrified Blood\", \"Malevolence\", \"Immortal Call\", \"Pride\", \"Purity of Ice\", \"Flicker Strike of Power\", \"Steelskin\", \"Crackling Lance of Branching\", \"Lightning Strike of Arcing\", \"Life Gain on Hit Support\", \"Defiance Banner\", \"Blood Rage\", \"Ball Lightning of Static\", \"Flesh Offering\", \"Dread Banner\", \"Toxic Rain of Withering\", \"Explosive Trap of Shrapnel\", \"Frenzy\", \"Hatred\", \"Storm Rain\", \"Warlord's Mark\", \"Faster Casting Support\", \"High-Impact Mine Support\", \"Arrow Nova Support\", \"Archmage Support\", \"Despair\", \"Molten Shell\", \"Infused Channelling Support\", \"Firestorm of Meteors\", \"Herald of Ice\", \"Purity of Fire\", \"Arc of Surging\", \"Storm Brand of Indecision\", \"Exsanguinate of Transmission\", \"Raise Spectre of Transience\", \"Soulrend of the Spiral\", \"Elemental Weakness\", \"Frostblink\", \"Predator Support\", \"Assassin's Mark\", \"Elemental Army Support\", \"Charged Mines Support\", \"Splitting Steel of Ammunition\", \"Grace\", \"Increased Duration Support\", \"Righteous Fire of Arcane Devotion\", \"Anger\", \"Arcane Surge Support\", \"Shattering Steel of Ammunition\", \"Scourge Arrow of Menace\", \"Item Rarity Support\", \"Purity of Elements\", \"Blade Blast of Unloading\", \"Wrath\", \"Summon Reaper of Revenants\", \"Summon Stone Golem\", \"Herald of Purity\", \"Vaal Firestorm\", \"Eye of Winter of Finality\", \"Tornado Shot of Cloudburst\", \"Rage Vortex of Berserking\", \"Pulverise Support\", \"Summon Holy Relic\", \"Freezing Pulse\", \"Fork Support\", \"Minion Speed Support\", \"Sadism Support\", \"Summon Carrion Golem\", \"Shield Charge\", \"Withering Touch Support\", \"Arcane Cloak\", \"Divine Blessing Support\", \"Determination\", \"Impale Support\", \"Chance to Poison Support\", \"Spellblade Support\", \"Lightning Warp\", \"Less Duration Support\", \"Arc of Oscillating\", \"Trap Support\", \"Summon Flame Golem\", \"Lesser Multiple Projectiles Support\", \"Cleave of Rage\", \"Blade Blast of Dagger Detonation\", \"Blastchain Mine Support\", \"Cyclone\", \"Tornado Shot\", \"Minefield Support\", \"Mana Leech Support\", \"Soul Link\", \"Locus Mine Support\", \"Holy Flame Totem of Ire\", \"Lightning Arrow of Electrocution\", \"Hexblast of Havoc\", \"Storm Rain of the Fence\", \"Fire Trap of Blasting\", \"Hexblast of Contradiction\", \"Animate Guardian\", \"Cold Snap of Power\", \"Advanced Traps Support\", \"Damage on Full Life Support\", \"Firestorm of Pelting\", \"Unleash Support\", \"War Banner\", \"Swiftbrand Support\", \"Additional Accuracy Support\", \"Ancestral Protector\", \"Maim Support\", \"Spellslinger\", \"Swift Assembly Support\", \"Sniper's Mark\", \"Kinetic Blast\", \"Blast Rain\", \"Increased Area of Effect Support\", \"Added Lightning Damage Support\", \"Cast while Channelling Support\", \"Haste\", \"Meat Shield Support\", \"Cast when Damage Taken Support\", \"Chance to Flee Support\", \"Artillery Ballista\", \"Summon Ice Golem\", \"Concentrated Effect Support\", \"Cast On Critical Strike Support\", \"Cast when Stunned Support\", \"Vile Toxins Support\", \"Fist of War Support\", \"Scorching Ray of Immolation\" })"
+          ]
+        },
+        {
+          "FilterName": "Good L21 ($)",
+          "RawQuery": [
+            "ClassName.Contains(\"Skill Gem\") && GemInfo.Level >= 21 && GemInfo.Level <= 21 && ItemQuality >= 0 && ItemQuality <= 19 && ContainsString(BaseName, new string[] { \"Vaal Blade Vortex\", \"Viper Strike of the Mamba\", \"Fire Trap of Blasting\", \"Penance Brand of Dissipation\", \"Ice Nova of Frostbolts\", \"Lightning Conduit of the Heavens\", \"Frostblink of Wintry Blast\", \"Exsanguinate of Transmission\", \"Animate Guardian of Smiting\", \"Ice Trap of Hollowness\", \"Storm Brand of Indecision\", \"Arc of Surging\", \"Cold Snap of Power\", \"Ethereal Knives of the Massacre\", \"Armageddon Brand of Recall\", \"Galvanic Arrow of Energy\", \"Summon Ice Golem of Hordes\", \"Firestorm of Meteors\", \"Summon Reaper of Revenants\", \"Toxic Rain of Sporeburst\", \"Summon Carrion Golem of Hordes\", \"Scourge Arrow of Menace\", \"Hexblast of Contradiction\", \"Summon Stone Golem of Hordes\", \"Blade Blast of Unloading\", \"Summon Flame Golem of Hordes\", \"Ethereal Knives of Lingering Blades\", \"Caustic Arrow of Poison\", \"Summon Skeletons of Mages\", \"Summon Lightning Golem of Hordes\", \"Divine Ire of Disintegration\", \"Volatile Dead of Confinement\", \"Explosive Trap of Magnitude\", \"Raise Zombie of Falling\", \"Flameblast of Contraction\", \"Boneshatter of Carnage\", \"Soulrend of the Spiral\", \"Ground Slam of Earthshaking\", \"Blade Trap of Laceration\", \"Frost Blades of Katabasis\", \"Boneshatter of Complex Trauma\", \"Ball Lightning of Static\", \"Seismic Trap of Swells\", \"Summon Skeletons of Archers\", \"Contagion of Transference\", \"Spark of the Nova\", \"Burning Arrow of Vigour\", \"Ball Lightning of Orbiting\", \"Shattering Steel of Ammunition\", \"Penance Brand of Conduction\", \"Purifying Flame of Revelations\", \"Crackling Lance of Branching\", \"Blade Vortex of the Scythe\", \"Detonate Dead of Chain Reaction\", \"Toxic Rain of Withering\", \"Summon Raging Spirit of Enormity\", \"Arc of Oscillating\", \"Flame Dash of Return\", \"Explosive Trap of Shrapnel\", \"Ice Nova of Deep Freeze\", \"Purity of Fire\", \"Summon Reaper of Eviscerating\", \"Purity of Ice\", \"Raise Spectre\", \"Corrupting Fever\", \"Frenzy of Onslaught\", \"Summon Chaos Golem of the Maelström\", \"Animate Guardian\", \"Malevolence\", \"Tornado Shot of Cloudburst\", \"Hexblast of Havoc\", \"Grace\", \"Anger\", \"Precision\", \"Dominating Blow of Inspiring\", \"Shrapnel Ballista of Steel\", \"Hatred\", \"Wrath\", \"Vitality\", \"Zealotry\", \"Determination\", \"Hexblast\", \"Summon Raging Spirit\", \"Purity of Lightning\", \"Purity of Elements\" })"
+          ]
+        },
+        {
+          "FilterName": "Six Link ($ or $$)",
+          "RawQuery": [ "IsIdentified && SocketInfo.LargestLinkSize == 6" ]
+        },
+        {
+          "FilterName": "Uniques ($ or $$)",
+          "RawQuery": [ "IsIdentified && Rarity == ItemRarity.Unique" ]
+        },
+        {
+          "FilterName": "Golden oil ($ or C)",
+          "RawQuery": [ "Path.Contains(\"Mushrune\") && ContainsString(BaseName, new string[] { \"Golden Oil\" })" ]
+        },
+      ]
+    },
+    {
+      "MenuName": "[1S] Currency",
+      "Filters": [
+        {
+          "FilterName": "All",
+          "RawQuery": [
+            "ClassName == \"StackableCurrency\"",
+            "&& !ContainsString(Path, new string[] { \"CurrencyDelveCrafting\", \"CurrencyItemisedProphecy\", \"CurrencyAfflictionOrb\", \"Mushrune\", \"Essence\" })",
+            "&& !ContainsString(BaseName, new string[] { \"Stacked Deck\", \"Catalyst\", \"Primeval Remnant\", \"Remnant\", \"Splinter\", \"Oil Extractor\" })"
+          ]
+        },
+        {
+          "FilterName": "All non golden oils (C)",
+          "RawQuery": [
+            "Path.Contains(\"Mushrune\")",
+            "&& !ContainsString(BaseName, new string[] { \"Golden Oil\" })"
+          ]
+        },
+        {
+          "FilterName": "Stacked Decks (C)",
+          "RawQuery": [ "BaseName == \"Stacked Deck\"" ]
+        },
+        {
+          "FilterName": "T4 Fossiles (C)",
+          "RawQuery": [ "ContainsString(BaseName, new string[] { \"Frigid Fossil\", \"Scorched Fossil\", \"Scorched Fossil\", \"Aberrant Fossil\" })" ]
+        },
+      ]
+    },
+    {
+      "MenuName": "[2S] Fragments",
+      "Filters": [
+        {
+          "FilterName": "All (F)",
+          "RawQuery": [
+            "(ClassName == \"MapFragment\" || ClassName == \"LabyrinthMapItem\" || ContainsString(BaseName, new string[] { \"Splinter\", \"Scarab\" }))",
+            "&& !ContainsString(BaseName, new string[] { \"Primeval Remnant\" })",
+            "&& !ContainsString(Path, new string[] { \"CurrencyAfflictionShard\" })"
+          ]
+        }
+      ]
+    },
+    {
+      "MenuName": "[3N] Blight maps",
+      "Filters": [
+        {
+          "FilterName": "Normal (1)",
+          "RawQuery": [ "FindMods(\"InfectedMap\").Any(Values[0] >= -40000)" ]
+        },
+      ]
+    },
+    {
+      "MenuName": "[4N] Divinations cards + Quality gems",
+      "Filters": [
+        {
+          "FilterName": "Other divination cards (2)",
+          "RawQuery": [ "ClassName == \"DivinationCard\"" ]
+        },
+        {
+          "FilterName": "Other gems (2)",
+          "RawQuery": [ "ClassName.Contains(\" Skill Gem\")" ]
+        },
+      ]
+    },
+    {
+      "MenuName": "[5P] Delve + Uber maps",
+      "Filters": [
+        {
+          "FilterName": "Other delve (D)",
+          "RawQuery": [ "Path.Contains(\"CurrencyDelveCrafting\") || ClassName == \"DelveStackableSocketableCurrency\"" ]
+        },
+        {
+          "FilterName": "Ravaged (D)",
+          "RawQuery": [ "FindMods(\"UberInfectedMap\").Any(Values[0] >= -40000)" ]
+        },
+      ]
+    },
+    {
+      "MenuName": "[6P] Agent flip",
+      "Filters": [
+        {
+          "FilterName": "Use for agent",
+          "RawQuery": [ "false" ]
+        },
+      ]
+    },
+  ]
+}
