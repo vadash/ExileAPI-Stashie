@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -79,9 +80,11 @@ namespace Stashie
             switch (eventId)
             {
                 case "switch_to_tab":
+                    DebugWindow.LogMsg($"switch_to_tab event received");
                     HandleSwitchToTabEvent(args);
                     break;
                 case "start_stashie":
+                    DebugWindow.LogMsg($"start_stashie event received");
                     _currentOperation ??= StashItems();
                     break;
             }
@@ -182,6 +185,19 @@ namespace Stashie
             return true;
         }
 
+        private bool InitializeInputController()
+        {
+            if (_inputController != null) return true;
+            var tryGetInputController = GameController.PluginBridge.GetMethod<Func<string, IInputController>>("InputHumanizer.TryGetInputController");
+            if (tryGetInputController is null)
+            {
+                DebugWindow.LogError($"{Name}: Failed to get Input Controller. Have you installed InputHumanizer?");
+                return false;
+            }
+            _inputController = tryGetInputController(this.Name);
+            return true;
+        }
+
         private async SyncTask<bool> StashItems()
         {
             int initialStashTab = GetIndexOfCurrentVisibleTab();
@@ -200,53 +216,43 @@ namespace Stashie
                 return false;
             }
 
-            var tryGetInputController =
-                GameController.PluginBridge.GetMethod<Func<string, IInputController>>(
-                    "InputHumanizer.TryGetInputController");
+            InitializeInputController();
+            if (_inputController is null) return false;
 
-            if (tryGetInputController is null)
+            using (_inputController)
             {
-                DebugWindow.LogError($"{Name}: Failed to get Input Controller. Have you installed InputHumanizer?");
-                return false;
-            }
+                var itemsSortedByStash = _itemsToStash
+                    .OrderBy(x => x.SkipSwitchTab || x.StashIndex == initialStashTab ? 0 : 1)
+                    .ThenBy(x => x.StashIndex)
+                    .ToList();
 
-            if ((_inputController = tryGetInputController(this.Name)) is not null)
-            {
-                using (_inputController)
+                await _inputController.KeyDown(Keys.LControlKey);
+
+                foreach (FilterResult filterResult in itemsSortedByStash)
                 {
-                    var itemsSortedByStash = _itemsToStash
-                        .OrderBy(x => x.SkipSwitchTab || x.StashIndex == initialStashTab ? 0 : 1)
-                        .ThenBy(x => x.StashIndex)
-                        .ToList();
-
-                    await _inputController.KeyDown(Keys.LControlKey);
-
-                    foreach (FilterResult filterResult in itemsSortedByStash)
+                    if (!filterResult.SkipSwitchTab)
                     {
-                        if (!filterResult.SkipSwitchTab)
-                        {
-                            if (await SwitchTab(filterResult.StashIndex) == false) continue;
-                        }
-
-                        await TaskUtils.CheckEveryFrame(() =>
-                                GameController.IngameState.IngameUi.StashElement
-                                    .AllInventories[GetIndexOfCurrentVisibleTab()] is not null &&
-                                GetTypeOfCurrentVisibleStash() != InventoryType.InvalidInventory,
-                            new CancellationTokenSource(250).Token);
-
-                        if (GameController.IngameState.IngameUi.StashElement
-                                .AllInventories[GetIndexOfCurrentVisibleTab()] is null ||
-                            GetTypeOfCurrentVisibleStash() == InventoryType.InvalidInventory)
-                        {
-                            DebugWindow.LogError($"{Name}: Stash Tab Error. Index: {GetIndexOfCurrentVisibleTab()}.");
-                            return false;
-                        }
-
-                        await StashItem(filterResult);
+                        if (await SwitchTab(filterResult.StashIndex) == false) continue;
                     }
 
-                    await _inputController.KeyUp(Keys.LControlKey);
+                    await TaskUtils.CheckEveryFrame(() =>
+                            GameController.IngameState.IngameUi.StashElement
+                                .AllInventories[GetIndexOfCurrentVisibleTab()] is not null &&
+                            GetTypeOfCurrentVisibleStash() != InventoryType.InvalidInventory,
+                        new CancellationTokenSource(250).Token);
+
+                    if (GameController.IngameState.IngameUi.StashElement
+                            .AllInventories[GetIndexOfCurrentVisibleTab()] is null ||
+                        GetTypeOfCurrentVisibleStash() == InventoryType.InvalidInventory)
+                    {
+                        DebugWindow.LogError($"{Name}: Stash Tab Error. Index: {GetIndexOfCurrentVisibleTab()}.");
+                        return false;
+                    }
+
+                    await StashItem(filterResult);
                 }
+
+                await _inputController.KeyUp(Keys.LControlKey);
             }
 
             return true;
@@ -358,35 +364,32 @@ namespace Stashie
 
         private async SyncTask<bool> SwitchTab(int tabIndex)
         {
-            int currentVisibleTab = GetIndexOfCurrentVisibleTab();
-            int travelDistance = tabIndex - currentVisibleTab;
+            InitializeInputController();
+            if (_inputController is null) return false;
 
-            if (travelDistance == 0) return true;
-
-            bool isToTheLeft = travelDistance < 0;
-
-            travelDistance = Math.Abs(travelDistance);
-
-            if (isToTheLeft)
+            using (_inputController)
             {
-                await PressKey(Keys.Left, travelDistance);
+                int currentVisibleTab = GetIndexOfCurrentVisibleTab();
+                int travelDistance = tabIndex - currentVisibleTab;
+                if (travelDistance == 0) return true;
+                bool isToTheLeft = travelDistance < 0;
+                travelDistance = Math.Abs(travelDistance);
+                if (isToTheLeft)
+                {
+                    await PressKey(Keys.Left, travelDistance);
+                }
+                else
+                {
+                    await PressKey(Keys.Right, travelDistance);
+                }
+                await TaskUtils.CheckEveryFrame(() => GetIndexOfCurrentVisibleTab() == tabIndex, new CancellationTokenSource(5000).Token);
+                if (GetIndexOfCurrentVisibleTab() != tabIndex)
+                {
+                    DebugWindow.LogError($"{Name}: Failed to switch to Stash Tab {tabIndex}.");
+                    return false;
+                }
+                await Task.Delay(Random.Shared.Next(80, 150));
             }
-            else
-            {
-                await PressKey(Keys.Right, travelDistance);
-            }
-
-            await TaskUtils.CheckEveryFrame(() => GetIndexOfCurrentVisibleTab() == tabIndex,
-                new CancellationTokenSource(5000).Token);
-
-            if (GetIndexOfCurrentVisibleTab() != tabIndex)
-            {
-                DebugWindow.LogError($"{Name}: Failed to switch to Stash Tab {tabIndex}.");
-                return false;
-            }
-
-            await Task.Delay(Random.Shared.Next(80, 150));
-
             return true;
         }
 
